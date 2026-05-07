@@ -238,34 +238,44 @@ class VisionDetectionNode(Node):
             return
 
         # Phase 1: Rotating Right
-        # TODO: Implement right sweep logic.
-        # Command a rightward twist until 45 degrees is reached.
-        # Upon completion, stop the robot and update the following state variables:
-        # - self.right_target_yaw
-        # - self.turning_left
-        # - self.turning_right
-        pass
-        
+        # TODO: Implement the Right Sweep logic
+        # 1. Check if the robot is currently in the 'turning_right' state.
+        # 2. If 'right_target_yaw' is None, record the current 'yaw' into 'start_spinning_yaw'.
+        # 3. Calculate 'right_target_yaw' (45 degrees right of the current yaw). Remember to use 'normalize_angle()'.
+        # 4. Calculate the error using 'angle_error()'. If the absolute error is within 'align_tol':
+        #    - Stop the robot using 'publish_stop()'.
+        #    - Clear 'right_target_yaw'.
+        #    - Transition the state variables to end the right turn and begin the left turn.
+        #    - Return.
+        # 5. If the target is not yet reached, command a constant rightward twist using 'publish_twist()'.
+        pass 
+
         # Phase 2: Rotating Left
-        # TODO: Implement left sweep logic.
-        # Command a leftward twist until the left target is reached.
-        # Upon completion, stop the robot and update the following state variables:
-        # - self.left_target_yaw
-        # - self.realigning
-        # - self.turning_left
-        pass
+        # TODO: Implement the Left Sweep logic
+        # 1. Check if the robot is currently in the 'turning_left' state.
+        # 2. If 'left_target_yaw' is None, calculate it as 45 degrees to the left of the original 'start_spinning_yaw'. Normalize it.
+        # 3. Calculate the error. If the absolute error is less than a small tolerance (e.g., 0.05):
+        #    - Stop the robot.
+        #    - Clear 'left_target_yaw'.
+        #    - Transition the state variables to end the left turn and begin realigning.
+        #    - Return.
+        # 4. If the target is not yet reached, command a constant leftward twist using 'publish_twist()'.
+        pass 
         
         # Phase 3: Goal Alignment
-        # TODO: Implement goal alignment and post-scan evaluation.
-        # Command rotation back to the original goal trajectory.
-        # Upon completion, stop the robot and update the following state variables:
-        # - self.realigning
-        # - self.scanning
-        # Finally, evaluate vision flags (self.ill_plant_detected_left, self.ill_plant_detected_right).
-        # Depending on detection, update either:
-        # - self.analyzing (and reset vision flags) 
-        # OR
-        # - self.search_start_x
+        # TODO: Implement Goal Alignment and post-scan decision making
+        # 1. Check if the robot is in the 'realigning' state.
+        # 2. Calculate the target yaw needed to face the goal using 'calculate_target_yaw(goal_x, goal_y)'.
+        # 3. Get the error using 'angle_error()'.
+        # 4. If the absolute error is within 'align_tol':
+        #    - Stop the robot and disable both 'realigning' and 'scanning' states.
+        #    - Check the vision flags: 'ill_plant_detected_left' and 'ill_plant_detected_right'.
+        #    - If either flag is True: reset both flags and activate the 'analyzing' state.
+        #    - If False: reset the 'search_start_x' variable to None.
+        #    - Return.
+        # 5. If not yet aligned, calculate a proportional angular velocity (e.g., applying a 0.8 gain to the error).
+        # 6. Clamp this angular velocity between '-turn_speed_max' and 'turn_speed_max'.
+        # 7. Send the velocity command using 'publish_twist()'.
         pass
 
     def analyze(self):
