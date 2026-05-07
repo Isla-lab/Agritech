@@ -241,31 +241,8 @@ class Turtlebot3SquarePath(Node):
 
         self.get_logger().info('Starting square path.')
 
-        n_sides = 4
-        angle = math.pi / 2 # 90 degrees
-
-        # Time allocation
-        total_rot_time = per_rot_duration * duration
-        total_straight_time = duration - total_rot_time
-
-        rot_time = total_rot_time / n_sides
-        straight_time = total_straight_time / n_sides
-
-        # Velocity calculations
-        linear_vel = side_length / straight_time
-        angular_vel = angle / rot_time
-
-        for i in range(n_sides):
-            if not rclpy.ok() or not self.is_running:
-                break
-
-            self.get_logger().info(f'Side {i+1}/4: move {side_length:.2f} m')
-            self.move_distance(side_length, linear_vel)
-
-            self.get_logger().info(f'Side {i+1}/4: rotate 90°')
-            self.rotate_angle(angle, angular_vel)
-
-        self.publish_stop()
+        # TODO
+        
         self.get_logger().info('Completed square path.')
 
 
@@ -293,39 +270,8 @@ class Turtlebot3SquarePath(Node):
 
         self.get_logger().info('Starting to follow grapevine rows...')
 
-        angle = math.pi / 2  # 90 degrees
-
-        for i in range(2):
-            if not rclpy.ok() or not self.is_running:
-                break
-            
-            # --- Navigate First Pair of Rows (Right-Hand Turns) ---
-            # Follow the current row
-            self.move_distance(straight_length, linear_vel)
-
-            # Turn 90 deg right to move toward the next row
-            self.rotate_angle(-angle, angular_vel)
-
-            # Move across to the parallel row
-            self.move_distance(side_length, linear_vel)
-
-            # Turn 90 deg right to align with the new row (facing opposite direction)
-            self.rotate_angle(-angle, angular_vel)
-
-            # --- Navigate Second Pair of Rows (Left-Hand Turns) ---
-            # Follow the second row
-            self.move_distance(straight_length, linear_vel)
-
-            # Turn 90 deg left to move toward the next row
-            self.rotate_angle(angle, angular_vel)
-
-            # Move across to the parallel row
-            self.move_distance(side_length, linear_vel)
-
-            # Turn 90 deg left to align with the next row (facing original direction)
-            self.rotate_angle(angle, angular_vel)
-
-        self.publish_stop()
+        # TODO
+        
         self.get_logger().info('Completed grapevine row navigation.')
 
 # -------------------------------------------------------------------
