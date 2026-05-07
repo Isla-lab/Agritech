@@ -163,7 +163,8 @@ class VisionDetectionNode(Node):
         green_channel = img_bgr[:, :, 1]
         red_channel = img_bgr[:, :, 2]
 
-        # Filter for symptomatic leaf color ranges
+        # TODO: Filter for symptomatic leaf color ranges
+        # TRY TO TUNE THE THRESHOLDS AND SEE THE DIFFERENCES!
         condition = (green_channel > 80) & (green_channel < 190) & \
                     (red_channel < 110) & (red_channel > 50) & \
                     (blue_channel < 70)
@@ -237,57 +238,35 @@ class VisionDetectionNode(Node):
             return
 
         # Phase 1: Rotating Right
-        if self.turning_right:
-            if self.right_target_yaw is None:
-                self.start_spinning_yaw = self.yaw
-                self.right_target_yaw = self.normalize_angle(self.yaw - math.pi / 4)
-
-            if abs(self.angle_error(self.right_target_yaw)) < self.align_tol:
-                self.publish_stop()
-                self.right_target_yaw = None
-                self.turning_left = True
-                self.turning_right = False
-                return
-            
-            self.publish_twist(0.0, -0.5)
-            return
+        # TODO: Implement right sweep logic.
+        # Command a rightward twist until 45 degrees is reached.
+        # Upon completion, stop the robot and update the following state variables:
+        # - self.right_target_yaw
+        # - self.turning_left
+        # - self.turning_right
+        pass
         
         # Phase 2: Rotating Left
-        if self.turning_left:
-            if self.left_target_yaw is None:
-                self.left_target_yaw = self.normalize_angle(self.start_spinning_yaw + math.pi / 4)
-
-            if abs(self.angle_error(self.left_target_yaw)) < 0.05:
-                self.publish_stop()
-                self.left_target_yaw = None
-                self.realigning = True
-                self.turning_left = False
-                return
-            
-            self.publish_twist(0.0, 0.5)
-            return
+        # TODO: Implement left sweep logic.
+        # Command a leftward twist until the left target is reached.
+        # Upon completion, stop the robot and update the following state variables:
+        # - self.left_target_yaw
+        # - self.realigning
+        # - self.turning_left
+        pass
         
         # Phase 3: Goal Alignment
-        if self.realigning:
-            target_yaw = self.calculate_target_yaw(self.goal_x, self.goal_y)
-            angle_err = self.angle_error(target_yaw)
-
-            if abs(angle_err) < self.align_tol:
-                self.publish_stop()
-                self.realigning = False
-                self.scanning = False
-
-                # Check if analysis is required based on vision flags
-                if self.ill_plant_detected_left or self.ill_plant_detected_right:
-                    self.ill_plant_detected_left = False
-                    self.ill_plant_detected_right = False
-                    self.analyzing = True
-                else:
-                    self.search_start_x = None
-                return
-            
-            angular_vel = max(min(0.8 * angle_err, self.turn_speed_max), -self.turn_speed_max)
-            self.publish_twist(0.0, angular_vel)
+        # TODO: Implement goal alignment and post-scan evaluation.
+        # Command rotation back to the original goal trajectory.
+        # Upon completion, stop the robot and update the following state variables:
+        # - self.realigning
+        # - self.scanning
+        # Finally, evaluate vision flags (self.ill_plant_detected_left, self.ill_plant_detected_right).
+        # Depending on detection, update either:
+        # - self.analyzing (and reset vision flags) 
+        # OR
+        # - self.search_start_x
+        pass
 
     def analyze(self):
         """
