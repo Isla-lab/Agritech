@@ -100,6 +100,7 @@ class ObstacleAvoidance(Node):
         # Safety measure to ensure the robot does not drift
         # If self.safety_alignment is True, then the robot will periodically realign to the next intersection, avoiding
         # drifting which causes unpredictable and problematic behavior
+        # TODO: remove it and see how things change!
         self.safety_alignment = True
 
         # -----------------------------
@@ -156,15 +157,10 @@ class ObstacleAvoidance(Node):
 
         self.ranges = np.array(msg.ranges)
 
-        n = len(self.ranges)
-        center = n // 2
-        # Define a window of 20 samples to the left and 20 to the right of the center
-        left = max(center - 20, 0)
-        right = min(center + 20, n)
-        if left < right:
-            self.current_distance = np.nanmin(self.ranges[left:right])
-        else:
-            self.current_distance = np.nanmin(self.ranges)
+        # TODO
+        # Compute self.current_distance as the minimum read range
+        # Remember to first clean the data (remove NaNs and Infs)
+        # Store also self.current_min_angle, as the angle corresponding to the minimum distance
 
     # -----------------------------
     # CONTROL METHODS
