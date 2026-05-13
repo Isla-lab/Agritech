@@ -437,6 +437,8 @@ class ObstacleAvoidance(Node):
                 # Align to next checkpoint (safety constraint/path following)
                 if self.safety_alignment:
                     self.align_to_next_checkpoint()
+                else:
+                    self.realigning = False
 
                 return
             
